@@ -159,12 +159,7 @@ export default function CounselorDashboard() {
   if (!user) return null
 
   return (
-    <Box minH="100vh" bg="gray.50" p={{ base: 2, md: 8 }}>
-      <Flex justify="flex-end" mb={4}>
-        <Button leftIcon={<FiLogOut />} colorScheme="red" variant="outline" onClick={handleLogout}>
-          Logout
-        </Button>
-      </Flex>
+    <Box minH="100vh" bg="gray.50" p={{ base: 2, md: 8 }} pt="160px">
       <Box bg="white" borderRadius="xl" boxShadow="lg" p={{ base: 2, md: 8 }}>
         <Tabs index={tabIndex} onChange={setTabIndex} isFitted variant="enclosed">
           <TabList mb={4}>

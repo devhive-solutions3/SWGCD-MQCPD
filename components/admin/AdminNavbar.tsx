@@ -47,10 +47,6 @@ export default function AdminNavbar() {
         return (
           <Box
             key={link.href}
-            borderRadius="full"
-            transition="background 0.3s cubic-bezier(0.4,0,0.2,1)"
-            _hover={{ bg: isActive ? 'green.100' : 'gray.100' }}
-            bg={isActive ? 'green.100' : 'transparent'}
             px={0}
             py={0}
             display="flex"
@@ -75,7 +71,7 @@ export default function AdminNavbar() {
                 left: 0,
                 bottom: '4px',
                 height: '2px',
-                width: 0,
+                width: isActive ? '100%' : 0,
                 bg: 'black',
                 borderRadius: 'full',
                 transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
@@ -101,7 +97,7 @@ export default function AdminNavbar() {
       left={0}
       w="100vw"
       zIndex={1000}
-      bg="#047857"
+      bg="#ecfdf5"
       px={0}
       py={0}
     >
@@ -143,6 +139,12 @@ export default function AdminNavbar() {
             onClick={handleLogout}
             size="sm"
             fontWeight="bold"
+            color="white"
+            bg="red.500"
+            _hover={{
+              bg: "red.600",
+              color: "white",
+            }}
           >
             Logout
           </Button>
@@ -180,6 +182,12 @@ export default function AdminNavbar() {
                 size="sm"
                 fontWeight="bold"
                 w="full"
+                color="white"
+                bg="red.500"
+                _hover={{
+                  bg: "red.600",
+                  color: "white",
+                }}
               >
                 Logout
               </Button>
