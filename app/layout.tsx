@@ -6,6 +6,7 @@ import Navbar from '@/components/navbar'
 import { Providers } from './providers'
 import Footer from '@/components/footer'
 import { usePathname } from 'next/navigation'
+import { Box } from '@chakra-ui/react'
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -3,7 +3,7 @@
 import { Box, Container, Heading, Text, VStack, Image, Button } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 
-const MotionVStack = motion(VStack)
+const MotionVStack = motion.create(VStack)
 
 interface HeroSectionProps {
   title: string
@@ -53,7 +53,7 @@ export default function HeroSection({
           h="100%"
           objectFit="cover"
           objectPosition="center"
-          fallbackSrc="https://via.placeholder.com/400x300?text=Placeholder"
+          fallbackSrc="/heropic.png"
           transform={{ base: "scale(1.1)", md: "none" }}
           transition="transform 0.3s ease-in-out"
         />

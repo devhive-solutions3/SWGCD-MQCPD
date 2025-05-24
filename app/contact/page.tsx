@@ -16,7 +16,7 @@ import { Mail, Phone, MapPin } from 'lucide-react'
 import { motion } from 'framer-motion'
 import HeroSection from '@/components/hero-section'
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 const counselors = [
   {
@@ -30,7 +30,7 @@ const counselors = [
 
 export default function Contact() {
   return (
-    <Box as="main" minH="100vh">
+    <Box as="main" minH="100vh" bg="#e9f4ef">
       <HeroSection
         title="Contact Us"
         subtitle="Get in touch with our counselors to schedule an appointment or learn more about our services."
@@ -39,7 +39,7 @@ export default function Contact() {
         showViewServicesButton={false}
       />
 
-      <Box bg="white" py={20}>
+      <Box bg="#e9f4ef" py={20}>
         <Container maxW="container.xl">
           <VStack spacing={16}>
             <Flex w="100%" justify="center" align="center" py={8}>
@@ -167,7 +167,7 @@ export default function Contact() {
               mx="auto"
             >
               <Box
-                bg="#ecfdf5"
+                bg="white"
                 p={8}
                 borderRadius="2xl"
                 boxShadow="md"

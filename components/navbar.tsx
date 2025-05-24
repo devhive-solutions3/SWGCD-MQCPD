@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react"
 import NextLink from "next/link"
 import { useState, useEffect } from "react"
-import { HamburgerIcon } from "@chakra-ui/icons"
+import { FiMenu } from "react-icons/fi"
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -111,7 +111,7 @@ export default function Navbar() {
             overflow="hidden"
             borderRadius="full"
             transition="background 0.3s cubic-bezier(0.4,0,0.2,1)"
-            _hover={{ bg: isActive ? 'green.100' : 'gray.100' }}
+            _hover={{ bg: isActive ? 'green.100' : 'transparent' }}
             bg={isActive ? 'green.100' : 'transparent'}
             px={0}
             py={0}
@@ -131,7 +131,9 @@ export default function Navbar() {
               onClick={onClose}
               bg="transparent"
               transition="color 0.3s cubic-bezier(0.4,0,0.2,1)"
-              _hover={{ textDecoration: 'underline', bg: 'transparent' }}
+              _hover={{
+                bg: 'transparent',
+              }}
             >
               {link.label}
             </Link>
@@ -157,13 +159,13 @@ export default function Navbar() {
     {isScrolled ? (
       <Box
         bg="#ecfdf5"
-        px={{ base: 6, md: 10, lg: 14 }}
+        px={{ base: 4, md: 10, lg: 14 }}
         py={2}
         borderRadius="full"
         boxShadow="md"
         display="flex"
         alignItems="center"
-        gap={{ base: 4, md: 6, lg: 8 }}
+        gap={{ base: 2, md: 6, lg: 8 }}
         transition="all 0.5s ease-in-out"
         maxW={{ base: "calc(100vw - 32px)", md: "container.xl" }}
         mx="auto"
@@ -174,20 +176,24 @@ export default function Navbar() {
           height={{ base: "24px", md: "32px" }}
           minH="24px"
           objectFit="contain"
-          mr={{ base: 2, md: 6 }}
+          mr={{ base: 1, md: 6 }}
           transition="all 0.5s ease-in-out"
         />
-        <HStack spacing={{ base: 4, md: 6, lg: 8 }} ml={2}>
+        <HStack spacing={{ base: 2, md: 6, lg: 8 }} ml={2} display={{ base: "none", md: "flex" }}>
           <NavLinks />
         </HStack>
         <IconButton
           aria-label="Open menu"
-          icon={<HamburgerIcon />}
-          display={{ base: "flex", md: "none" }}
+          icon={<FiMenu size={20} />}
           variant="ghost"
+          bg="transparent"
+          _hover={{ bg: "gray.100" }}
+          borderRadius="full"
+          size="sm"
+          display={{ base: "flex", md: "none" }}
           onClick={onOpen}
           color="gray.800"
-          size="sm"
+          ml="auto"
         />
       </Box>
     ) : (
@@ -253,7 +259,7 @@ export default function Navbar() {
         </HStack>
         <IconButton
           aria-label="Open menu"
-          icon={<HamburgerIcon />}
+          icon={<FiMenu size={20} />}
           display={{ base: "flex", md: "none" }}
           variant="ghost"
           onClick={onOpen}
@@ -269,7 +275,27 @@ export default function Navbar() {
           <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
           <DrawerBody>
             <VStack spacing={4} align="stretch" mt={4}>
-              <NavLinks />
+              {NAV_LINKS.map(link => {
+                const isActive = typeof window !== 'undefined' && window.location.pathname === link.href;
+                return (
+                  <Link
+                    as={NextLink}
+                    key={link.href}
+                    href={link.href}
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    fontWeight={isActive ? "bold" : "medium"}
+                    color={isActive ? "black" : "gray.800"}
+                    fontSize="md"
+                    bg={isActive ? "green.100" : "transparent"}
+                    _hover={{ bg: "green.100", color: "black", fontWeight: "bold" }}
+                    onClick={onClose}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </VStack>
           </DrawerBody>
         </DrawerContent>

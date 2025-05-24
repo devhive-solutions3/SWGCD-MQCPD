@@ -19,7 +19,7 @@ import HeroSection from '@/components/hero-section'
 import { useState } from 'react'
 import BookingModal from '@/components/modals/BookingModal'
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 const counselor = {
   name: 'Ma. Sheila Q. Ricalde, MAEd, RPm, RGC, CMHA, CMHFR',
@@ -171,23 +171,6 @@ export default function Counseling() {
               </MotionBox>
             </Flex>
           </VStack>
-        </Container>
-      </Box>
-
-      {/* Note Section */}
-      <Box bg="#019354" py={{ base: 8, md: 12 }}>
-        <Container maxW="container.xl">
-          <Text
-            color="white"
-            fontSize={{ base: 'md', md: 'lg' }}
-            fontStyle="italic"
-            textAlign="center"
-            maxW="3xl"
-            mx="auto"
-            px={{ base: 4, md: 0 }}
-          >
-            Please take note that the CMLS Guidance Offices are open to walk-in clients. But in order for us to properly serve your needs, we encourage students to make an appointment beforehand.
-          </Text>
         </Container>
       </Box>
 

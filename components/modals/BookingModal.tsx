@@ -35,7 +35,7 @@ interface BookingModalProps {
   serviceType: string
 }
 
-const MotionModalContent = motion(ModalContent)
+const MotionModalContent = motion.create(ModalContent)
 
 const weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const timeSlots = [

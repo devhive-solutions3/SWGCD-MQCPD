@@ -66,10 +66,10 @@ export default function Home() {
   }, []);
 
   return (
-    <Box as="main" bgGradient="linear(to-br, #f5fbe8, #f7f6f3 60%, #e6f4ee)" minH="100vh">
+    <Box as="main" bg="#e9f4ef" minH="100vh">
       {/* Hero Section */}
       <section
-        className="relative w-full min-h-screen flex items-center justify-center pt-[72px] pb-0 overflow-hidden"
+        className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
         style={{
           backgroundImage:
             'linear-gradient(to right, rgba(5, 122, 85, 0.92) 0%, rgba(5, 122, 85, 0.7) 40%, rgba(255,255,255,0.0) 100%), url(/heropic.png)',
@@ -79,8 +79,8 @@ export default function Home() {
           zIndex: 0,
         }}
       >
-        <div className="flex flex-col items-start justify-center gap-8 py-16 min-h-[calc(100vh-72px)] w-full">
-          <div className="w-full max-w-2xl flex flex-col justify-center items-start text-left pl-20 md:pl-32 lg:pl-48 pr-0">
+        <div className="flex flex-col items-start justify-center gap-8 w-full px-4 md:px-8 lg:px-12">
+          <div className="w-full max-w-2xl flex flex-col justify-center items-start text-left pl-4 md:pl-32 lg:pl-48">
             <div className="text-xs md:text-sm tracking-widest text-white drop-shadow-lg mb-4 font-semibold uppercase">DLSMHSI Pharmacy</div>
             <h1 className="font-bold text-white drop-shadow-lg leading-tight mb-8" style={{ fontSize: 'clamp(2.5rem,6vw,3.5rem)' }}>
               Welcome to Guidance & Counseling Services 
@@ -88,8 +88,8 @@ export default function Home() {
             <div className="text-white/90 mb-8 drop-shadow-md max-w-md" style={{ fontSize: 'clamp(1rem,2.5vw,1.25rem)' }}>
               Promoting academic success, personal growth, and student wellness through counseling services.
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xs">
-              <Link href="/book" className="w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <Link href="/services#book-appointment" className="w-full sm:w-auto">
                 <button className="px-8 py-4 rounded-full bg-green-600 text-white font-medium shadow-md hover:bg-green-700 transition text-base w-full">
                   Book Now
                 </button>
@@ -113,11 +113,6 @@ export default function Home() {
           <Text color="gray.700" textAlign="center" maxW="2xl" mb={8}>
             Explore the full range of student support services and discover how we can help you thrive academically and personally.
           </Text>
-          <Link href="/services" passHref>
-            <Button colorScheme="blackAlpha" bg="black" color="white" borderRadius="full" fontWeight="bold" fontSize="lg" px={8} py={4} _hover={{ bg: 'gray.800' }}>
-              View Services
-            </Button>
-          </Link>
         </VStack>
       </Container>
 
@@ -130,7 +125,7 @@ export default function Home() {
             {reminders.map((reminder, idx) => (
               <Box
                 key={reminder.label}
-                bg={idx % 2 === 0 ? '#e6f4ee' : '#f7f6f3'}
+                bg={idx % 2 === 0 ? '#f7f6f3' : '#f7f6f3'}
                 borderRadius="3xl"
                 boxShadow="md"
                 p={{ base: 6, sm: 8 }}

@@ -8,7 +8,7 @@ import {
   FormControl, FormLabel
 } from "@chakra-ui/react"
 import { onAuthStateChanged, signOut, User } from "firebase/auth"
-import { collection, getDocs, updateDoc, doc, addDoc, query, orderBy, serverTimestamp, setDoc, getDoc, deleteDoc } from "firebase/firestore"
+import { collection, getDocs, updateDoc, doc, addDoc, query, orderBy, serverTimestamp, setDoc, getDoc, deleteDoc, onSnapshot } from "firebase/firestore"
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { auth } from "@/lib/firebaseconfig"
 import { db } from "@/lib/firebaseconfig"
@@ -41,15 +41,19 @@ export default function CounselorDashboard() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log("Starting auth state check...");
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log("👤 Firebase Auth User:", user)
+      console.log("Auth state changed, loading:", loading);
   
       if (user) {
         setUser(user)
         setLoading(false)
+        console.log("User authenticated, loading set to false");
       } else {
         setUser(null)
         setLoading(false)
+        console.log("No user found, redirecting to login");
         router.replace("/admin/login")
       }
     })
@@ -57,19 +61,12 @@ export default function CounselorDashboard() {
   }, [router])
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      const snap = await getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc")))
-      setBookings(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }
-    fetchBookings()
-  }, [])
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const snap = await getDocs(query(collection(db, "events"), orderBy("date", "desc")))
-      setEvents(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }
-    fetchEvents()
+    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"))
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const liveBookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      setBookings(liveBookings)
+    })
+    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
@@ -159,8 +156,15 @@ export default function CounselorDashboard() {
   if (!user) return null
 
   return (
-    <Box minH="100vh" bg="gray.50" p={{ base: 2, md: 8 }} pt="160px">
-      <Box bg="white" borderRadius="xl" boxShadow="lg" p={{ base: 2, md: 8 }}>
+    <Box minH="100vh" bg="#e9f4ef" pt={{ base: 16, md: 20 }} px={{ base: 8, md: 12 }} pb={{ base: 4, md: 8 }}>
+      <Box
+        bg="white"
+        borderRadius="xl"
+        boxShadow="lg"
+        px={{ base: 4, md: 8 }}
+        py={8}
+        mt={{ base: 4, md: 8 }}
+      >
         <Tabs index={tabIndex} onChange={setTabIndex} isFitted variant="enclosed">
           <TabList mb={4}>
             <Tab>Manage Bookings</Tab>
@@ -237,15 +241,21 @@ export default function CounselorDashboard() {
                       <Tbody>
                         {filteredBookings.map(b => (
                           <Tr key={b.id}>
-                            <Td>{b.fullname}</Td>
+                            <Td whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">{b.fullname}</Td>
                             <Td>{b.email}</Td>
                             <Td>{b.program}</Td>
                             <Td>{b.type || 'Guidance'}</Td>
-                            <Td>{b.date}</Td>
-                            <Td>{b.time}</Td>
+                            <Td whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+                              {b.date ? new Date(b.date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              }) : ''}
+                            </Td>
+                            <Td whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">{b.time}</Td>
                             <Td>{b.status}</Td>
                             <Td>
-                              <Select size="sm" value={b.status} onChange={e => handleStatusChange(b.id, e.target.value)}>
+                              <Select size="md" w="120px" minW="100px" value={b.status} onChange={e => handleStatusChange(b.id, e.target.value)}>
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approved</option>
                                 <option value="completed">Completed</option>
@@ -275,26 +285,22 @@ export default function CounselorDashboard() {
                       type="date"
                       value={eventForm.date}
                       onChange={e => setEventForm(f => ({ ...f, date: e.target.value }))}
-                      maxW="120px"
+                      maxW="165px"
                       required
                     />
                     <Input
-                      placeholder="Time"
+                      type="time"
                       value={eventForm.time}
                       onChange={e => setEventForm(f => ({ ...f, time: e.target.value }))}
-                      maxW="100px"
+                      maxW="150px"
+                      required
                     />
                     <Input
                       placeholder="Location"
                       value={eventForm.location}
                       onChange={e => setEventForm(f => ({ ...f, location: e.target.value }))}
                       maxW="140px"
-                    />
-                    <Input
-                      placeholder="Description"
-                      value={eventForm.description}
-                      onChange={e => setEventForm(f => ({ ...f, description: e.target.value }))}
-                      maxW="200px"
+                      required
                     />
                     <Box maxW="200px" w="100%">                      
                       <Box
@@ -330,70 +336,122 @@ export default function CounselorDashboard() {
                     </Box>
                     <Button type="submit" colorScheme="green" height="40px" px={6}>Add Event</Button>
                   </Flex>
+                      {/* ✅ Move Description below the Flex for full width */}
+                  <Textarea
+                      placeholder="Event Description"
+                      value={eventForm.description}
+                      onChange={e => setEventForm(f => ({ ...f, description: e.target.value }))}
+                      rows={4}
+                      resize="vertical"
+                      mt={4}
+                      width="56%"
+                      height="80px"
+                  />
                 </form>
               </Box>
-              <Table size="sm" variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>Title</Th>
-                    <Th>Date</Th>
-                    <Th>Time</Th>
-                    <Th>Location</Th>
-                    <Th>Description</Th>
-                    <Th>Actions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+              {/* Responsive Events List/Table */}
+              <Box>
+                {/* Show table on md and up, cards on base/sm */}
+                <Box display={{ base: "none", md: "block" }}>
+                  <Table size="sm" variant="simple">
+                    <Thead>
+                      <Tr>
+                        <Th>Title</Th>
+                        <Th>Date</Th>
+                        <Th>Time</Th>
+                        <Th>Location</Th>
+                        <Th>Description</Th>
+                        <Th>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {events.map(ev => (
+                        <Tr key={ev.id}>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <Input value={eventEdit.title} onChange={e => setEventEdit(f => ({ ...f, title: e.target.value }))} size="sm" />
+                            ) : ev.title}
+                          </Td>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <Input type="date" value={eventEdit.date} onChange={e => setEventEdit(f => ({ ...f, date: e.target.value }))} size="sm" />
+                            ) : ev.date}
+                          </Td>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <Input value={eventEdit.time} onChange={e => setEventEdit(f => ({ ...f, time: e.target.value }))} size="sm" />
+                            ) : ev.time}
+                          </Td>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <Input value={eventEdit.location} onChange={e => setEventEdit(f => ({ ...f, location: e.target.value }))} size="sm" />
+                            ) : ev.location}
+                          </Td>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <Input value={eventEdit.description} onChange={e => setEventEdit(f => ({ ...f, description: e.target.value }))} size="sm" />
+                            ) : ev.description}
+                          </Td>
+                          <Td>
+                            {eventEditId === ev.id ? (
+                              <HStack>
+                                <Button size="sm" colorScheme="green" onClick={() => handleUpdateEvent(ev.id)}>Save</Button>
+                                <Button size="sm" variant="ghost" onClick={() => setEventEditId(null)}>Cancel</Button>
+                              </HStack>
+                            ) : (
+                              <HStack>
+                                <Button size="sm" variant="outline" onClick={() => handleEditEvent(ev)}>Edit</Button>
+                                <IconButton
+                                  size="sm"
+                                  colorScheme="red"
+                                  aria-label="Delete"
+                                  icon={<FiTrash2 />}
+                                  onClick={() => handleDeleteEvent(ev.id)}
+                                />
+                              </HStack>
+                            )}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </Box>
+                {/* Card layout for mobile */}
+                <VStack spacing={4} align="stretch" display={{ base: "flex", md: "none" }}>
                   {events.map(ev => (
-                    <Tr key={ev.id}>
-                      <Td>
-                        {eventEditId === ev.id ? (
-                          <Input value={eventEdit.title} onChange={e => setEventEdit(f => ({ ...f, title: e.target.value }))} size="sm" />
-                        ) : ev.title}
-                      </Td>
-                      <Td>
-                        {eventEditId === ev.id ? (
+                    <Box key={ev.id} p={4} bg="white" borderRadius="md" boxShadow="sm">
+                      <Text fontWeight="bold">{ev.title}</Text>
+                      <Text fontSize="sm" color="gray.600">Date: {ev.date}</Text>
+                      <Text fontSize="sm" color="gray.600">Time: {ev.time}</Text>
+                      <Text fontSize="sm" color="gray.600">Location: {ev.location}</Text>
+                      <Text fontSize="sm" color="gray.600">Description: {ev.description}</Text>
+                      <HStack mt={2} spacing={2}>
+                        <Button size="sm" variant="outline" onClick={() => handleEditEvent(ev)}>Edit</Button>
+                        <IconButton
+                          size="sm"
+                          colorScheme="red"
+                          aria-label="Delete"
+                          icon={<FiTrash2 />}
+                          onClick={() => handleDeleteEvent(ev.id)}
+                        />
+                      </HStack>
+                      {eventEditId === ev.id && (
+                        <VStack mt={2} spacing={2} align="stretch">
+                          <Input value={eventEdit.title} onChange={e => setEventEdit(f => ({ ...f, title: e.target.value }))} size="sm" placeholder="Title" />
                           <Input type="date" value={eventEdit.date} onChange={e => setEventEdit(f => ({ ...f, date: e.target.value }))} size="sm" />
-                        ) : ev.date}
-                      </Td>
-                      <Td>
-                        {eventEditId === ev.id ? (
-                          <Input value={eventEdit.time} onChange={e => setEventEdit(f => ({ ...f, time: e.target.value }))} size="sm" />
-                        ) : ev.time}
-                      </Td>
-                      <Td>
-                        {eventEditId === ev.id ? (
-                          <Input value={eventEdit.location} onChange={e => setEventEdit(f => ({ ...f, location: e.target.value }))} size="sm" />
-                        ) : ev.location}
-                      </Td>
-                      <Td>
-                        {eventEditId === ev.id ? (
-                          <Input value={eventEdit.description} onChange={e => setEventEdit(f => ({ ...f, description: e.target.value }))} size="sm" />
-                        ) : ev.description}
-                      </Td>
-                      <Td>
-                        {eventEditId === ev.id ? (
+                          <Input value={eventEdit.time} onChange={e => setEventEdit(f => ({ ...f, time: e.target.value }))} size="sm" placeholder="Time" />
+                          <Input value={eventEdit.location} onChange={e => setEventEdit(f => ({ ...f, location: e.target.value }))} size="sm" placeholder="Location" />
+                          <Input value={eventEdit.description} onChange={e => setEventEdit(f => ({ ...f, description: e.target.value }))} size="sm" placeholder="Description" />
                           <HStack>
                             <Button size="sm" colorScheme="green" onClick={() => handleUpdateEvent(ev.id)}>Save</Button>
                             <Button size="sm" variant="ghost" onClick={() => setEventEditId(null)}>Cancel</Button>
                           </HStack>
-                        ) : (
-                          <HStack>
-                            <Button size="sm" variant="outline" onClick={() => handleEditEvent(ev)}>Edit</Button>
-                            <IconButton
-                              size="sm"
-                              colorScheme="red"
-                              aria-label="Delete"
-                              icon={<FiTrash2 />}
-                              onClick={() => handleDeleteEvent(ev.id)}
-                            />
-                          </HStack>
-                        )}
-                      </Td>
-                    </Tr>
+                        </VStack>
+                      )}
+                    </Box>
                   ))}
-                </Tbody>
-              </Table>
+                </VStack>
+              </Box>
             </TabPanel>
             <TabPanel px={0}>
               <Heading size="md" mb={4}>Homepage Reminder</Heading>

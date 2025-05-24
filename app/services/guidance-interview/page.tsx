@@ -13,7 +13,7 @@ import { motion } from 'framer-motion'
 import HeroSection from '@/components/hero-section'
 import BookingModal from '@/components/modals/BookingModal'
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 export default function GuidanceInterview() {
   const [isModalOpen, setModalOpen] = useState(false)

@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { Providers } from '../providers'
 import AdminNavbar from '@/components/admin/AdminNavbar'
 import { usePathname } from 'next/navigation'
+import Footer from '@/components/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +27,7 @@ export default function AdminLayout({
           <main className="min-h-screen bg-gray-50">
             {children}
           </main>
+          {!isLoginPage && <Footer />}
         </Providers>
       </body>
     </html>

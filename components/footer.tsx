@@ -9,7 +9,7 @@ import {
 
 export default function Footer() {
   return (
-    <Box as="footer" bg="gray.50" color="gray.700" py={8}>
+    <Box as="footer" bg="#e9f4ef" color="gray.700" py={8}>
       <Container maxW="container.xl">
         <Stack spacing={8} align="center">
           <Text fontSize="sm" textAlign="center">

@@ -39,7 +39,7 @@ import { CalendarIcon } from '@chakra-ui/icons'
 import HeroSection from '@/components/hero-section'
 import Link from 'next/link'
 
-const MotionModalContent = motion(ModalContent)
+const MotionModalContent = motion.create(ModalContent)
 
 const bounceKeyframes = keyframes`
   0%, 100% {
@@ -52,7 +52,7 @@ const bounceKeyframes = keyframes`
 
 const bounceAnimation = `${bounceKeyframes} 1.5s infinite`
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 const serviceCategories = [
   {
@@ -136,7 +136,7 @@ export default function Services() {
   }
 
   return (
-    <Box as="main" minH="100vh">
+    <Box as="main" minH="100vh" bg="#e9f4ef">
       <Box position="relative">
         <HeroSection
           title="Our Services"
@@ -145,36 +145,10 @@ export default function Services() {
           height="100vh"
           showViewServicesButton={false}
         />
-        <Box
-          position="absolute"
-          bottom="6"
-          left="50%"
-          transform="translateX(-50%)"
-          textAlign="center"
-          color="white"
-          fontSize="lg"
-          fontWeight="medium"
-          cursor="pointer"
-          animation={bounceAnimation}
-          onClick={scrollToServices}
-          transition="opacity 0.3s ease"
-          _hover={{
-            opacity: 0.8,
-          }}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-          zIndex={10}
-          textShadow="0 2px 4px rgba(0,0,0,0.3)"
-        >
-          <Text color="white" fontWeight="semibold">See more</Text>
-          <Text color="white" fontWeight="semibold">↓</Text>
-        </Box>
       </Box>
 
       {/* Service Categories Showcase */}
-      <Box bg="white" py={20} id="services-section">
+      <Box bg="#e9f4ef" py={20} id="services-section">
         <Container maxW="container.xl">
           <VStack spacing={20}>
             {serviceCategories.map((category, index) => (
@@ -193,7 +167,7 @@ export default function Services() {
                     objectFit="cover"
                     w="full"
                     h={{ base: '300px', md: '400px' }}
-                    fallbackSrc="https://via.placeholder.com/400x300?text=Placeholder"
+                    fallbackSrc="/heropic.png"
                   />
                 </Box>
 
@@ -221,9 +195,11 @@ export default function Services() {
                         mb={4}
                       >
                         <AccordionButton
-                          bg="gray.50"
+                          bg="#e9f4ef"
                           borderRadius="lg"
-                          _hover={{ bg: 'gray.100' }}
+                          _hover={{ bg: '#047857',      // or your preferred hover bg color
+                            color: 'white',       // text turns white on hover
+                            transition: 'all 0.2s', }}
                           p={4}
                         >
                           <Box flex="1" textAlign="left">
@@ -249,7 +225,7 @@ export default function Services() {
       </Box>
 
       {/* All Services Grid */}
-      <Box bg="gray.50" py={20}>
+      <Box bg="#e9f4ef" py={20} id="book-appointment">
         <Container maxW="container.xl">
           <VStack spacing={12}>
             <Heading
@@ -333,29 +309,6 @@ export default function Services() {
           </VStack>
         </Container>
       </Box>
-
-      {/* Floating Booking Button */}
-      <Tooltip label="Book an Appointment" placement="left">
-        <IconButton
-          icon={<CalendarIcon />}
-          bg="#019354"
-          color="white"
-          size="lg"
-          aria-label="Book Appointment"
-          position="fixed"
-          bottom={6}
-          right={6}
-          zIndex={20}
-          borderRadius="full"
-          onClick={onOpen}
-          transition="all 0.2s ease-in-out"
-          _hover={{ 
-            bg: 'green.600',
-            transform: 'scale(1.1)',
-            boxShadow: 'lg'
-          }}
-        />
-      </Tooltip>
 
       {/* Booking Modal */}
       <AnimatePresence>

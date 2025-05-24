@@ -18,7 +18,7 @@ import NextLink from 'next/link'
 import { FaCheckCircle } from 'react-icons/fa'
 import HeroSection from '@/components/hero-section'
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 export default function PsychologicalTesting() {
   return (
@@ -30,7 +30,7 @@ export default function PsychologicalTesting() {
         height={{ base: '500px', md: '600px' }}
       />
 
-      <Box bg="white" py={20}>
+      <Box bg="#e9f4ef" py={20}>
         <Container maxW="container.xl">
           <VStack spacing={16}>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">

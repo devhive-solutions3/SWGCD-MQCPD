@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
 import { db } from '@/lib/firebaseconfig'
 
-const MotionBox = motion(Box)
+const MotionBox = motion.create(Box)
 
 export default function Events() {
   const [events, setEvents] = useState<any[]>([])
@@ -36,7 +36,7 @@ export default function Events() {
   }, [])
 
   return (
-    <Box as="main" bg="gray.50">
+    <Box as="main" bg="#e9f4ef">
       <Box position="relative">
         <HeroSection
           title="Upcoming Events"
@@ -155,60 +155,10 @@ export default function Events() {
                       <Text _groupHover={{ color: 'white' }} transition="color 0.3s" textAlign="left" fontSize={{ base: "sm", sm: "md" }}>{event.location}</Text>
                     </HStack>
                   </VStack>
-
-                  <Button
-                    bg="#019354"
-                    color="white"
-                    borderRadius="full"
-                    fontWeight="bold"
-                    fontSize={{ base: "md", sm: "lg" }}
-                    mt={6}
-                    w="full"
-                    _hover={{
-                      bg: 'green.600',
-                      color: 'white',
-                      transform: 'translateY(-2px)',
-                      boxShadow: 'lg',
-                    }}
-                    _active={{
-                      bg: 'green.800',
-                      color: 'white',
-                    }}
-                    _focus={{
-                      boxShadow: 'outline',
-                    }}
-                    _groupHover={{ bg: 'white', color: '#019354' }}
-                    transition="all 0.2s"
-                  >
-                    Register Now
-                  </Button>
                 </MotionBox>
               ))}
             </SimpleGrid>
           )}
-
-          <VStack spacing={6} mt={16}>
-            <Heading as="h2" size="xl" color="emerald.900" fontWeight="bold">
-              Want to Stay Updated?
-            </Heading>
-            <Text color="gray.600" textAlign="center">
-              Subscribe to our newsletter to receive updates about upcoming events and activities.
-            </Text>
-            <Button
-              colorScheme="brand"
-              borderRadius="full"
-              fontWeight="bold"
-              fontSize="lg"
-              _hover={{
-                bg: 'green.600',
-                transform: 'translateY(-2px)',
-                boxShadow: 'md',
-              }}
-              transition="all 0.2s"
-            >
-              Subscribe to Newsletter
-            </Button>
-          </VStack>
         </VStack>
       </Container>
     </Box>

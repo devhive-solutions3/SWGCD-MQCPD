@@ -14,8 +14,8 @@ import { motion } from 'framer-motion'
 import { Users } from 'lucide-react'
 import HeroSection from '@/components/hero-section'
 
-const MotionBox = motion(Box)
-const MotionVStack = motion(VStack)
+const MotionBox = motion.create(Box)
+const MotionVStack = motion.create(VStack)
 
 export default function Referral() {
   return (
@@ -28,7 +28,7 @@ export default function Referral() {
       />
 
       {/* Main Content Section */}
-      <Box bg="white" py={20}>
+      <Box bg="#e9f4ef" py={20}>
         <Container maxW="container.xl">
           <VStack spacing={{ base: 8, md: 12 }}>
             {/* Decorative Icon */}
